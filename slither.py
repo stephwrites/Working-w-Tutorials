@@ -1,5 +1,7 @@
 import pygame
 import time
+import random
+
 pygame.init()
 
 white = (255,255,255)
@@ -13,14 +15,14 @@ display_height = 600
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Slither')
 
+clock = pygame.time.Clock()
+
 block_size = 10
 fps = 30
 
 # object for function message_to_screen
 # font and font size (25)
 font = pygame.font.SysFont(None,25)
-
-clock = pygame.time.Clock()
 
 # function to print a message to the screen
 def message_to_screen(msg,color):
@@ -33,18 +35,20 @@ def gameLoop():
     gameExit = False
     gameOver = False
 
-    # snake starting point (?)
+    # snake starting point 
     lead_x = display_width/2
     lead_y = display_height/2
 
     lead_x_change = 0
     lead_y_change = 0
+
+    rand_apple_x = random.randrange(0,display_width - block_size)
+    rand_apple_y = random.randrange(0,display_height - block_size)
     
     while not gameExit:
         while gameOver == True:
             gameDisplay.fill(white)
-            message_to_screen("Game Over" + '\n'
-                              + "Press C to play again or Q to quit", red)
+            message_to_screen("Game Over" + '\n' + "Press C to play again or Q to quit", red)
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -86,7 +90,9 @@ def gameLoop():
         lead_x += lead_x_change
         lead_y += lead_y_change
         gameDisplay.fill(white)
-        pygame.draw.rect(gameDisplay, black, [lead_x,lead_y,block_size,block_size])
+        # (x, y, [width, height])
+        pygame.draw.rect(gameDisplay,red,[rand_apple_x,rand_apple_y,block_size,block_size])
+        pygame.draw.rect(gameDisplay,black,[lead_x,lead_y,block_size,block_size])
         
         pygame.display.update()
 
