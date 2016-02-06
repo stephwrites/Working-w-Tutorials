@@ -47,6 +47,9 @@ def gameLoop():
     lead_x_change = 0
     lead_y_change = 0
 
+    snakeList = []
+    snakeLength = 1
+
     # rounding so that the location of the apple lines up with location of snake
     rand_apple_x = round(random.randrange(0,display_width - block_size)/10.0) * 10.0
     rand_apple_y = round(random.randrange(0,display_height - block_size)/10.0) * 10.0
@@ -54,7 +57,7 @@ def gameLoop():
     while not gameExit:
         while gameOver == True:
             gameDisplay.fill(white)
-            message_to_screen("Game Over\nPress C to play again or Q to quit", red)
+            message_to_screen("Game Over, press C to play again or Q to quit", red)
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -101,11 +104,20 @@ def gameLoop():
         # (x, y, [width, height])
         pygame.draw.rect(gameDisplay,red,[rand_apple_x,rand_apple_y,block_size,block_size])
 
-        snakeList = []
         snakeHead = []
         snakeHead.append(lead_x)
         snakeHead.append(lead_y)
         snakeList.append(snakeHead)
+
+        if len(snakeList) > snakeLength:
+            del snakeList[0]
+
+        # analyze everything up to the last element in the list
+        # (snakehead is the last element in the array)
+        for eachSegment in snakeList[:-1]:
+            if eachSegment == snakeHead:
+                gameOver = True
+        
         snake(block_size,snakeList)
 
         pygame.display.update()
@@ -115,6 +127,7 @@ def gameLoop():
             # whenever "apple" is run over, a new apple is generated
             rand_apple_x = round(random.randrange(0,display_width - block_size)/10.0) * 10.0
             rand_apple_y = round(random.randrange(0,display_height - block_size)/10.0) * 10.0
+            snakeLength += 1
 
         clock.tick(fps)
 
